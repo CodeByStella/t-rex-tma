@@ -21,6 +21,10 @@ export const TOTAL_BIRDS = Math.max(1, Math.floor(VIEW_PORT_WIDTH / 2000));
 
 // Mobile-specific adjustments
 export const IS_MOBILE = VIEW_PORT_WIDTH < 768;
-export const GAME_HEIGHT = IS_MOBILE ? VIEW_PORT_HEIGHT * 0.8 : 400;
-export const SCORE_FONT_SIZE = IS_MOBILE ? 16 : 20;
-export const SCORE_Y_POSITION = IS_MOBILE ? VIEW_PORT_HEIGHT * 0.85 : 370;
+// Global scale to make world elements larger on mobile small screens
+export const GLOBAL_SCALE = IS_MOBILE ? Math.min(1.5, Math.max(1.0, 360 / Math.min(VIEW_PORT_WIDTH, VIEW_PORT_HEIGHT))) : 1;
+
+export const GAME_HEIGHT = IS_MOBILE ? Math.floor(VIEW_PORT_HEIGHT * 0.8) : 400;
+// Increase score font size on mobile for readability
+export const SCORE_FONT_SIZE = IS_MOBILE ? 24 : 20;
+export const SCORE_Y_POSITION = IS_MOBILE ? Math.floor(VIEW_PORT_HEIGHT * 0.08) : 30;

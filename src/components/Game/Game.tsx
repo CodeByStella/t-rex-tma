@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback, FC, useRef } from 'react';
 import { Stage, Container, Text } from '@pixi/react';
+import { TextStyle } from 'pixi.js';
 import { Ground, Clouds, Wrapper, Dino, Trees, GameOver, BtnRestart, Birds } from '@/components';
 import { 
 	VIEW_PORT_WIDTH, 
@@ -7,7 +8,8 @@ import {
 	GAME_HEIGHT, 
 	SCORE_FONT_SIZE, 
 	SCORE_Y_POSITION,
-	IS_MOBILE 
+	IS_MOBILE,
+	GLOBAL_SCALE
 } from '@/global/constants';
 import { ComponentBuilderProps, PixiObject } from '@/global/interfaces';
 import { AppContext } from '@/global/context';
@@ -198,9 +200,13 @@ export const Game: FC<GameProps> = ({ restartGame }) => {
 		);
 	}
 
+	// Text styles
+	const scoreTextStyle = new TextStyle({ fill: '#111111', fontSize: SCORE_FONT_SIZE, fontWeight: 'bold' });
+	const promptTextStyle = new TextStyle({ fill: '#111111', fontSize: SCORE_FONT_SIZE + 6, fontWeight: 'bold' });
+
 	return (
 		<Stage width={VIEW_PORT_WIDTH} height={GAME_HEIGHT} options={{ antialias: true, background: '#ffffff' }}>
-			<Container sortableChildren={true}>
+			<Container sortableChildren={true} scale={{ x: GLOBAL_SCALE, y: GLOBAL_SCALE }}>
 				<AppContext.Provider
 					value={{
 						detectCollision,
@@ -234,11 +240,13 @@ export const Game: FC<GameProps> = ({ restartGame }) => {
 					text={`Score: ${score}`} 
 					x={HALF_VIEW_PORT_WIDTH / 4} 
 					y={SCORE_Y_POSITION}
+					style={scoreTextStyle}
 				/>
 				<Text 
 					text={`High Score: ${highScore}`} 
 					x={HALF_VIEW_PORT_WIDTH} 
 					y={SCORE_Y_POSITION}
+					style={scoreTextStyle}
 				/>
 			</Container>
 			<Container visible={gameOver}>
@@ -254,6 +262,7 @@ export const Game: FC<GameProps> = ({ restartGame }) => {
 						x={VIEW_PORT_WIDTH / 2} 
 						y={GAME_HEIGHT / 2}
 						anchor={{ x: 0.5, y: 0.5 }}
+						style={promptTextStyle}
 					/>
 				</Container>
 			)}
