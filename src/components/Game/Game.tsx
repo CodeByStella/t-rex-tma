@@ -193,7 +193,7 @@ export const Game: FC<GameProps> = ({ restartGame }) => {
 
 	useEffect(() => {
 		if (score > 0 && score % 200 === 0) {
-			const newGameSpeed = gameSpeed + 1;
+			const newGameSpeed = GAME_SPEED.START + score/200;
 			setGameSpeed(newGameSpeed);
 			setGameSpeedToSessionStorage(newGameSpeed);
 		}
