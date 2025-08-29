@@ -8,7 +8,7 @@
 html, body {
   height: 100%;
   /* overflow: hidden; */
-  background-color: #ffffff;
+  background-color: red;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
@@ -27,8 +27,13 @@ html, body {
   width: 100vw;
   /* overflow: hidden; */
   position: fixed;
+  background-color: blue;
   top: 0;
   left: 0;
+}
+
+div {
+  background-color: green;
 }
 
 /* Mobile responsive adjustments */
