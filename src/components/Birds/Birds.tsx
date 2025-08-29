@@ -46,7 +46,7 @@ export const Birds: React.FC<BirdsProps> = ({ xPos, update }) => {
 	}, []);
 
 	useTick(() => {
-		setXContainer(xContainer - gameSpeed * 3);
+		setXContainer(xContainer - gameSpeed * 3.5);
 	}, gameSpeed > 0);
 
 	useEffect(() => {

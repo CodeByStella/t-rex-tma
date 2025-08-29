@@ -33,7 +33,9 @@ export const Game: FC<GameProps> = ({ restartGame }) => {
 	const [score, setScore] = useState(0);
 	const [highScore, setHighScore] = useState(0);
 	const [isLoading, setIsLoading] = useState(true);
+	const [treesEnabled, setTreesEnabled] = useState(false);
 	const gameSpeedRef = useRef(gameSpeed);
+	const treesTimerRef = useRef<number | null>(null);
 
 	const appStore = useStore();
 	const { state: store, dispatch } = appStore;
@@ -127,6 +129,35 @@ export const Game: FC<GameProps> = ({ restartGame }) => {
 		restartGame();
 	};
 
+	// Helper to simulate keyboard events so existing listeners handle actions
+	const dispatchKeyEvent = (code: string, type: 'keydown' | 'keyup' = 'keydown') => {
+		const event = new KeyboardEvent(type, {
+			code,
+			bubbles: true,
+			cancelable: true,
+		});
+		document.dispatchEvent(event);
+	};
+
+	// UI control handlers
+	const handleUiStart = () => {
+		// Mirrors Space key which starts or restarts
+		dispatchKeyEvent('Space', 'keydown');
+	};
+
+	const handleUiJump = () => {
+		// Mirrors ArrowUp/Space for jump
+		dispatchKeyEvent('ArrowUp', 'keydown');
+	};
+
+	const handleUiDuckDown = () => {
+		dispatchKeyEvent('ArrowDown', 'keydown');
+	};
+
+	const handleUiDuckUp = () => {
+		dispatchKeyEvent('ArrowDown', 'keyup');
+	};
+
 	useEffect(() => {
 		const gameSpeed = getGameSpeedFromSessionStorage();
 		if (gameSpeed > GAME_SPEED.DEFAULT) {
@@ -185,6 +216,31 @@ export const Game: FC<GameProps> = ({ restartGame }) => {
 		};
 	}, [gameSpeed, gameOver, score]);
 
+	// Enable trees 5 seconds after the game starts
+	useEffect(() => {
+		// Clear any existing timer
+		if (treesTimerRef.current) {
+			window.clearTimeout(treesTimerRef.current);
+			treesTimerRef.current = null;
+		}
+
+		if (gameSpeed >= GAME_SPEED.START && !gameOver) {
+			setTreesEnabled(false);
+			treesTimerRef.current = window.setTimeout(() => {
+				setTreesEnabled(true);
+			}, 5000);
+		} else {
+			setTreesEnabled(false);
+		}
+
+		return () => {
+			if (treesTimerRef.current) {
+				window.clearTimeout(treesTimerRef.current);
+				treesTimerRef.current = null;
+			}
+		};
+	}, [gameSpeed, gameOver]);
+
 	if (isLoading) {
 		return (
 			<div style={{ 
@@ -205,6 +261,7 @@ export const Game: FC<GameProps> = ({ restartGame }) => {
 	const promptTextStyle = new TextStyle({ fill: '#111111', fontSize: SCORE_FONT_SIZE + 6, fontWeight: 'bold' });
 
 	return (
+		<>
 		<Stage width={VIEW_PORT_WIDTH} height={GAME_HEIGHT} options={{ antialias: true, background: '#ffffff' }}>
 			<Container sortableChildren={true} scale={{ x: GLOBAL_SCALE, y: GLOBAL_SCALE }}>
 				<AppContext.Provider
@@ -220,18 +277,21 @@ export const Game: FC<GameProps> = ({ restartGame }) => {
 						<Wrapper
 							componentBuilder={birdsBuilder}
 							total={2}
-							width={HALF_VIEW_PORT_WIDTH}
+							width={VIEW_PORT_WIDTH}
 							skipFirstElement={true}
 						/>
 					)}
 					<Wrapper componentBuilder={cloudsBuilder} total={3} width={HALF_VIEW_PORT_WIDTH} />
 					<Dino gameSpeed={gameSpeed} setRef={setDinoRef} />
-					<Wrapper
-						componentBuilder={treesBuilder}
-						total={2}
-						width={HALF_VIEW_PORT_WIDTH / 2}
-						skipFirstElement={true}
-					/>
+					{!treesEnabled && null}
+					{treesEnabled && (
+						<Wrapper
+							componentBuilder={treesBuilder}
+							total={2}
+							width={VIEW_PORT_WIDTH}
+							skipFirstElement={true}
+						/>
+					)}
 					<Ground gameSpeed={gameSpeed} />
 				</AppContext.Provider>
 			</Container>
@@ -267,5 +327,67 @@ export const Game: FC<GameProps> = ({ restartGame }) => {
 				</Container>
 			)}
 		</Stage>
+
+		{/* On-screen controls overlay */}
+		<div
+			style={{
+				position: 'fixed',
+				left: 0,
+				right: 0,
+				bottom: 16,
+				display: 'flex',
+				justifyContent: 'center',
+				gap: 12,
+				pointerEvents: 'auto',
+			}}
+		>
+			<button
+				aria-label="Start or Restart"
+				onClick={handleUiStart}
+				style={{
+					padding: '10px 14px',
+					fontSize: 16,
+					borderRadius: 8,
+					border: '1px solid #ccc',
+					background: '#f8f8f8',
+					cursor: 'pointer',
+				}}
+			>
+				{gameOver ? 'Restart' : gameSpeed === 0 ? 'Start' : 'Running'}
+			</button>
+			<button
+				aria-label="Jump"
+				onClick={handleUiJump}
+				style={{
+					padding: '10px 14px',
+					fontSize: 16,
+					borderRadius: 8,
+					border: '1px solid #ccc',
+					background: '#f0f9ff',
+					cursor: 'pointer',
+				}}
+			>
+				Jump
+			</button>
+			<button
+				aria-label="Duck"
+				onMouseDown={handleUiDuckDown}
+				onMouseUp={handleUiDuckUp}
+				onMouseLeave={handleUiDuckUp}
+				onTouchStart={handleUiDuckDown}
+				onTouchEnd={handleUiDuckUp}
+				style={{
+					padding: '10px 14px',
+					fontSize: 16,
+					borderRadius: 8,
+					border: '1px solid #ccc',
+					background: '#fff7ed',
+					cursor: 'pointer',
+				}}
+			>
+				Duck
+			</button>
+		</div>
+		</>
 	);
 };
