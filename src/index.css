@@ -37,9 +37,11 @@ html, body {
   canvas {
     max-width: 100vw !important;
     max-height: 100vh !important;
+    width: 100vw !important;
+    height: 100vh !important;
     touch-action: manipulation;
-  }
-  
+}
+
   /* Prevent zoom on double tap */
   * {
     touch-action: manipulation;
