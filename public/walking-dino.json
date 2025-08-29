@@ -1,0 +1,55 @@
+{
+	"frames": {
+		"w1.png": {
+			"frame": {
+				"x": 1,
+				"y": 1,
+				"w": 88,
+				"h": 94
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 88,
+				"h": 94
+			},
+			"sourceSize": {
+				"w": 88,
+				"h": 94
+			}
+		},
+		"w2.png": {
+			"frame": {
+				"x": 91,
+				"y": 1,
+				"w": 88,
+				"h": 94
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 88,
+				"h": 94
+			},
+			"sourceSize": {
+				"w": 88,
+				"h": 94
+			}
+		}
+	},
+	"meta": {
+		"app": "http://www.codeandweb.com/texturepacker",
+		"version": "1.0",
+		"image": "walking-dino.png",
+		"format": "RGBA8888",
+		"size": {
+			"w": 180,
+			"h": 96
+		},
+		"scale": "1"
+	}
+}

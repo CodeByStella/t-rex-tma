@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Telegram Mini App Test</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 20px;
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+        }
+        .test-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-button {
+            background: #0088cc;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 5px;
+        }
+        .test-button:hover {
+            background: #006699;
+        }
+        .log {
+            background: #f8f8f8;
+            border: 1px solid #ddd;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 20px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .log-entry {
+            margin: 5px 0;
+            padding: 5px;
+            border-left: 3px solid #0088cc;
+            background: white;
+        }
+        .error {
+            border-left-color: #ff4444;
+            color: #ff4444;
+        }
+        .success {
+            border-left-color: #44ff44;
+            color: #44ff44;
+        }
+    </style>
+</head>
+<body>
+    <div class="test-container">
+        <h1>🧪 Telegram Mini App Test Environment</h1>
+        <p>This page simulates the Telegram Mini App environment for testing purposes.</p>
+        
+        <h3>Test Controls</h3>
+        <button class="test-button" onclick="initTelegram()">Initialize Telegram App</button>
+        <button class="test-button" onclick="testHighScore()">Test High Score</button>
+        <button class="test-button" onclick="testGameStats()">Test Game Stats</button>
+        <button class="test-button" onclick="clearLog()">Clear Log</button>
+        
+        <h3>Test Log</h3>
+        <div id="log" class="log"></div>
+    </div>
+
+    <script>
+        // Mock Telegram Web App for testing
+        window.Telegram = {
+            WebApp: {
+                isExpanded: false,
+                viewportHeight: window.innerHeight,
+                viewportStableHeight: window.innerHeight,
+                platform: 'webk',
+                headerColor: '#ffffff',
+                backgroundColor: '#ffffff',
+                isClosingConfirmationEnabled: false,
+                themeParams: {
+                    bg_color: '#ffffff',
+                    secondary_bg_color: '#f0f0f0',
+                    text_color: '#000000',
+                    hint_color: '#999999',
+                    link_color: '#0088cc',
+                    button_color: '#0088cc',
+                    button_text_color: '#ffffff'
+                },
+                initDataUnsafe: {
+                    user: {
+                        id: 12345,
+                        first_name: 'Test',
+                        last_name: 'User',
+                        username: 'testuser',
+                        language_code: 'en'
+                    }
+                },
+                initData: '',
+                colorScheme: 'light',
+                version: '6.9',
+                ready: function() {
+                    log('Telegram Web App ready() called', 'success');
+                },
+                expand: function() {
+                    this.isExpanded = true;
+                    log('Telegram Web App expand() called', 'success');
+                },
+                setHeaderColor: function(color) {
+                    this.headerColor = color;
+                    log(`Header color set to: ${color}`, 'success');
+                },
+                setBackgroundColor: function(color) {
+                    this.backgroundColor = color;
+                    log(`Background color set to: ${color}`, 'success');
+                },
+                isVersionAtLeast: function(version) {
+                    return this.version >= version;
+                },
+                showAlert: function(message) {
+                    log(`Alert shown: ${message}`, 'success');
+                    alert(message);
+                },
+                showConfirm: function(message, callback) {
+                    log(`Confirm shown: ${message}`, 'success');
+                    const confirmed = confirm(message);
+                    if (callback) callback(confirmed);
+                },
+                CloudStorage: {
+                    setItem: function(key, value, callback) {
+                        localStorage.setItem(key, value);
+                        log(`CloudStorage setItem: ${key} = ${value}`, 'success');
+                        if (callback) callback(null, true);
+                    },
+                    getItem: function(key, callback) {
+                        const value = localStorage.getItem(key);
+                        log(`CloudStorage getItem: ${key} = ${value}`, 'success');
+                        if (callback) callback(null, value);
+                    },
+                    getItems: function(keys, callback) {
+                        const items = {};
+                        keys.forEach(key => {
+                            items[key] = localStorage.getItem(key);
+                        });
+                        log(`CloudStorage getItems: ${JSON.stringify(items)}`, 'success');
+                        if (callback) callback(null, items);
+                    },
+                    getKeys: function(callback) {
+                        const keys = Object.keys(localStorage);
+                        log(`CloudStorage getKeys: ${keys.join(', ')}`, 'success');
+                        if (callback) callback(null, keys);
+                    },
+                    removeItem: function(key, callback) {
+                        localStorage.removeItem(key);
+                        log(`CloudStorage removeItem: ${key}`, 'success');
+                        if (callback) callback(null, true);
+                    },
+                    removeItems: function(keys, callback) {
+                        keys.forEach(key => localStorage.removeItem(key));
+                        log(`CloudStorage removeItems: ${keys.join(', ')}`, 'success');
+                        if (callback) callback(null, true);
+                    }
+                }
+            }
+        };
+
+        function log(message, type = 'info') {
+            const logDiv = document.getElementById('log');
+            const entry = document.createElement('div');
+            entry.className = `log-entry ${type}`;
+            entry.textContent = `[${new Date().toLocaleTimeString()}] ${message}`;
+            logDiv.appendChild(entry);
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        function initTelegram() {
+            try {
+                log('Initializing Telegram Web App...', 'info');
+                window.Telegram.WebApp.ready();
+                window.Telegram.WebApp.expand();
+                window.Telegram.WebApp.setHeaderColor('#ffffff');
+                window.Telegram.WebApp.setBackgroundColor('#ffffff');
+                log('Telegram Web App initialized successfully!', 'success');
+            } catch (error) {
+                log(`Error initializing Telegram: ${error.message}`, 'error');
+            }
+        }
+
+        function testHighScore() {
+            try {
+                log('Testing high score functionality...', 'info');
+                const testScore = Math.floor(Math.random() * 1000) + 100;
+                window.Telegram.WebApp.CloudStorage.setItem('highScore_12345', testScore.toString(), (error) => {
+                    if (error) {
+                        log(`Error setting high score: ${error}`, 'error');
+                    } else {
+                        log(`High score set to: ${testScore}`, 'success');
+                        // Test getting it back
+                        window.Telegram.WebApp.CloudStorage.getItem('highScore_12345', (error, value) => {
+                            if (error) {
+                                log(`Error getting high score: ${error}`, 'error');
+                            } else {
+                                log(`High score retrieved: ${value}`, 'success');
+                            }
+                        });
+                    }
+                });
+            } catch (error) {
+                log(`Error testing high score: ${error.message}`, 'error');
+            }
+        }
+
+        function testGameStats() {
+            try {
+                log('Testing game stats functionality...', 'info');
+                const stats = {
+                    highScore: Math.floor(Math.random() * 1000) + 100,
+                    totalGames: Math.floor(Math.random() * 50) + 1,
+                    lastPlayed: new Date().toISOString()
+                };
+                window.Telegram.WebApp.CloudStorage.setItem('gameStats_12345', JSON.stringify(stats), (error) => {
+                    if (error) {
+                        log(`Error setting game stats: ${error}`, 'error');
+                    } else {
+                        log(`Game stats set: ${JSON.stringify(stats)}`, 'success');
+                        // Test getting it back
+                        window.Telegram.WebApp.CloudStorage.getItem('gameStats_12345', (error, value) => {
+                            if (error) {
+                                log(`Error getting game stats: ${error}`, 'error');
+                            } else {
+                                try {
+                                    const parsedStats = JSON.parse(value);
+                                    log(`Game stats retrieved: ${JSON.stringify(parsedStats)}`, 'success');
+                                } catch (parseError) {
+                                    log(`Error parsing game stats: ${parseError.message}`, 'error');
+                                }
+                            }
+                        });
+                    }
+                });
+            } catch (error) {
+                log(`Error testing game stats: ${error.message}`, 'error');
+            }
+        }
+
+        function clearLog() {
+            document.getElementById('log').innerHTML = '';
+        }
+
+        // Auto-initialize on page load
+        window.addEventListener('load', () => {
+            log('Test page loaded. Mock Telegram Web App environment created.', 'info');
+            log('Click "Initialize Telegram App" to test the integration.', 'info');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,55 @@
+{
+	"frames": {
+		"1.png": {
+			"frame": {
+				"x": 1,
+				"y": 1,
+				"w": 92,
+				"h": 60
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 92,
+				"h": 60
+			},
+			"sourceSize": {
+				"w": 92,
+				"h": 60
+			}
+		},
+		"2.png": {
+			"frame": {
+				"x": 95,
+				"y": 1,
+				"w": 92,
+				"h": 68
+			},
+			"rotated": false,
+			"trimmed": false,
+			"spriteSourceSize": {
+				"x": 0,
+				"y": 0,
+				"w": 92,
+				"h": 68
+			},
+			"sourceSize": {
+				"w": 92,
+				"h": 68
+			}
+		}
+	},
+	"meta": {
+		"app": "http://www.codeandweb.com/texturepacker",
+		"version": "1.0",
+		"image": "flying-bird.png",
+		"format": "RGBA8888",
+		"size": {
+			"w": 188,
+			"h": 70
+		},
+		"scale": "1"
+	}
+}
